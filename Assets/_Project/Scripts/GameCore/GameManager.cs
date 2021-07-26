@@ -5,6 +5,8 @@ using SnakeGame.Player;
 using SnakeGame.View;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace SnakeGame.GameCore
 {
@@ -14,27 +16,29 @@ namespace SnakeGame.GameCore
         [SerializeField] private GridSystem.Grid _grid;
         [SerializeField] private ViewManager _viewManager;
         [SerializeField] private float _tickDeltaTime = 300f;
+
+        public UnityEvent OnSnakeDie;
         
         private Snake _snake;
 
         private void Awake()
         {
             _snake = new Snake(_grid);
-            
+
             if (_snakeController)
             {
                 _snakeController.SetSnake(_snake);
             }
-            
+
             if (_viewManager)
             {
                 _viewManager.Init(_grid, _snake, 1f / (_tickDeltaTime / 1000f));
             }
 
-            _snake.Init(Vector2Int.up);
+            _snake.Init(_grid.RequestEmptyCell(_snake));
 
             _grid.SpawnFood(_snake);
-            
+
             PlanTick();
         }
 
@@ -43,8 +47,20 @@ namespace SnakeGame.GameCore
             Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(_tickDeltaTime), () =>
             {
                 _snake.Tick();
-                PlanTick();
+                if (!_snake.IsDead)
+                {
+                    PlanTick();
+                }
+                else
+                {
+                    OnSnakeDie?.Invoke();
+                }
             });
+        }
+
+        public void Restart()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
 #if UNITY_EDITOR

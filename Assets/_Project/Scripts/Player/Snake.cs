@@ -18,18 +18,21 @@ namespace SnakeGame.Player
         
         public IReadOnlyReactiveCollection<Vector2Int> Segments => _segments;
 
+        public event Action OnDie; 
+        
+        public bool IsDead { get; private set; } = false;
+
         public Snake(GridSystem.Grid grid)
         {
             _grid = grid;
         }
 
-        public void Init(Vector2Int direction)
+        public void Init(Vector2Int position)
         {
-            TryChangeDirection(direction);
-            _segments.Add(Vector2Int.zero);
-            _started = true;
+            //TryChangeDirection(direction);
+            _segments.Add(position);
         }
-
+        
         public bool TryChangeDirection(InputDirection direction)
         {
             switch (direction)
@@ -70,6 +73,7 @@ namespace SnakeGame.Player
             
             _direction = direction;
             _directionChangeBlocked = true;
+            _started = true;
             return true;
         }
 
@@ -77,10 +81,16 @@ namespace SnakeGame.Player
         {
             _segments.Add(position);
         }
+
+        public void Die()
+        {
+            IsDead = true;
+            OnDie?.Invoke();
+        }
         
         public void Tick()
         {
-            if (!_started)
+            if (!_started || IsDead)
             {
                 return;
             }

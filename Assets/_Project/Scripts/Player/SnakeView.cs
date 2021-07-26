@@ -13,7 +13,8 @@ namespace SnakeGame.View
         private readonly List<GameObject> _segments = new List<GameObject>();
         private Snake _snake;
         private float _speed;
-
+        private bool _stopped = false;
+        
         [SerializeField] private GameObject _segmentPrefab;
 
         public void Init(Snake snake, float speed)
@@ -21,6 +22,17 @@ namespace SnakeGame.View
             _snake = snake;
             _speed = speed;
             _snake.Segments.ObserveAdd().Subscribe(position => { AddSegmentAt(position.Value); }).AddTo(Disposables);
+            _snake.OnDie += OnSnakeDie;
+        }
+
+        private void OnDisable()
+        {
+            if (_snake == null)
+            {
+                return;
+            }
+            
+            _snake.OnDie -= OnSnakeDie;
         }
 
         private void AddSegmentAt(Vector2Int position)
@@ -40,6 +52,11 @@ namespace SnakeGame.View
 
         private void Update()
         {
+            if (_stopped)
+            {
+                return;
+            }
+            
             var targetPosition = Vector3.zero;
             
             for (int i = 0; i < Mathf.Min(_segments.Count, _snake.Segments.Count); i++)
@@ -49,6 +66,17 @@ namespace SnakeGame.View
                 _segments[i].transform.position = Vector3.MoveTowards(_segments[i].transform.position, targetPosition,
                     _speed * Time.deltaTime);
             }
+        }
+
+        private void OnSnakeDie()
+        {
+            StartCoroutine(DieRoutine(0.3f / _speed));
+        }
+
+        private IEnumerator DieRoutine(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            _stopped = true;
         }
     }
 }

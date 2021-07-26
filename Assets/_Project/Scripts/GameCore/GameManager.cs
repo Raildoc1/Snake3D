@@ -28,7 +28,7 @@ namespace SnakeGame.GameCore
             
             if (_viewManager)
             {
-                _viewManager.Init(_grid, _snake);
+                _viewManager.Init(_grid, _snake, 1f / (_tickDeltaTime / 1000f));
             }
 
             _snake.Init(Vector2Int.up);

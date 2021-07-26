@@ -14,7 +14,8 @@ namespace SnakeGame.Player
         private GridSystem.Grid _grid;
         private Vector2Int _direction;
         private bool _started = false;
-
+        private bool _directionChangeBlocked = false;
+        
         public IReadOnlyReactiveCollection<Vector2Int> Segments => _segments;
 
         public Snake(GridSystem.Grid grid)
@@ -48,12 +49,27 @@ namespace SnakeGame.Player
 
         private bool TryChangeDirection(Vector2Int direction)
         {
-            if (_direction.x * direction.x + _direction.y * direction.y != 0)
+            if (_directionChangeBlocked)
+            {
+                return false;
+            }
+
+            var temp = _direction.x * direction.x + _direction.y * direction.y;
+            var oppositeDirection = temp != 0;
+            var sameDirection = temp == 1;
+            
+            if (sameDirection)
+            {
+                return false;
+            }
+            
+            if (_segments.Count > 1 && oppositeDirection)
             {
                 return false;
             }
             
             _direction = direction;
+            _directionChangeBlocked = true;
             return true;
         }
 
@@ -74,6 +90,7 @@ namespace SnakeGame.Player
             _segments.Add(segment);
             
             _grid.MoveOnCell(segment, this);
+            _directionChangeBlocked = false;
         }
     }
 }

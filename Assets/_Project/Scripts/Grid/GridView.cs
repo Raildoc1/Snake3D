@@ -22,7 +22,6 @@ namespace SnakeGame.View
 
         private void AddObject(GridObject gridObject)
         {
-            Debug.Log("AddObject");
             if (gridObject.GetType() == InteractableType.Food)
             {
                 _objectToViewMap[gridObject] = Instantiate(_foodPrefab, new Vector3(gridObject.Position.x + 0.5f, 0f, gridObject.Position.y + 0.5f), Quaternion.identity, transform);

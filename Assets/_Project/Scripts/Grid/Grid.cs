@@ -7,14 +7,19 @@ using UnityEngine;
 
 namespace SnakeGame.Grid
 {
-    public class Grid : MonoBehaviour
+    [System.Serializable]
+    public class Grid
     {
+        private ReactiveCollection<GridObject> _objects = new ReactiveCollection<GridObject>();
+        
         [SerializeField] private int _width = 10;
         [SerializeField] private int _height = 10;
-
+        
         public IReadOnlyReactiveCollection<GridObject> Objects => _objects;
-        private ReactiveCollection<GridObject> _objects = new ReactiveCollection<GridObject>();
 
+        public int Width => _width;
+        public int Height => _height;
+        
         public void MoveOnCell(Vector2Int cell)
         {
             foreach (var @object in Objects)
@@ -25,26 +30,6 @@ namespace SnakeGame.Grid
                 }
             }
         }
-
-#if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
-        {
-            var oldColor = Gizmos.color;
-            Gizmos.color = Color.yellow;
-
-            for (int i = 0; i <= _width; i++)
-            {
-                Gizmos.DrawLine(transform.position + i * Vector3.right, transform.position + _height * Vector3.forward + i * Vector3.right);
-            }
-            
-            for (int i = 0; i <= _height; i++)
-            {
-                Gizmos.DrawLine(transform.position + i * Vector3.forward, transform.position + _width * Vector3.right + i * Vector3.forward);
-            }
-            
-            Gizmos.color = oldColor;
-        }
-#endif
         
     }
 }

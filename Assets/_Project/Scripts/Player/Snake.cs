@@ -10,50 +10,56 @@ namespace SnakeGame.Player
 {
     public class Snake
     {
-        private ReactiveCollection<Vector2Int> _segments;
-        private Grid.Grid _grid;
+        private ReactiveCollection<Vector2Int> _segments = new ReactiveCollection<Vector2Int> {};
+        private GridSystem.Grid _grid;
         private Vector2Int _direction;
         private bool _started = false;
-        
-        public IReadOnlyReactiveCollection<Vector2Int> Segments => _segments; 
 
-        public Snake(Grid.Grid grid)
+        public IReadOnlyReactiveCollection<Vector2Int> Segments => _segments;
+
+        public Snake(GridSystem.Grid grid)
         {
             _grid = grid;
         }
 
         public void Init(Vector2Int direction)
         {
-            ChangeDirection(direction);
-            _segments = new ReactiveCollection<Vector2Int>();
+            TryChangeDirection(direction);
             _segments.Add(Vector2Int.zero);
             _started = true;
         }
 
-        public void ChangeDirection(Vector2Int direction)
-        {
-            _direction = direction;
-        }
-        
-        public void ChangeDirection(InputDirection direction)
+        public bool TryChangeDirection(InputDirection direction)
         {
             switch (direction)
             {
                 case InputDirection.Left:
-                    ChangeDirection(Vector2Int.left);
-                    break;
+                    return TryChangeDirection(Vector2Int.left);
                 case InputDirection.Right:
-                    ChangeDirection(Vector2Int.right);
-                    break;
+                    return TryChangeDirection(Vector2Int.right);
                 case InputDirection.Up:
-                    ChangeDirection(Vector2Int.up);
-                    break;
+                    return TryChangeDirection(Vector2Int.up);
                 case InputDirection.Down:
-                    ChangeDirection(Vector2Int.down);
-                    break;
+                    return TryChangeDirection(Vector2Int.down);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
             }
+        }
+
+        private bool TryChangeDirection(Vector2Int direction)
+        {
+            if (_direction.x * direction.x + _direction.y * direction.y != 0)
+            {
+                return false;
+            }
+            
+            _direction = direction;
+            return true;
+        }
+
+        public void EatAt(Vector2Int position)
+        {
+            _segments.Add(position);
         }
         
         public void Tick()
@@ -62,12 +68,12 @@ namespace SnakeGame.Player
             {
                 return;
             }
-            
+
             var segment = _segments.Last() + _direction;
             _segments.RemoveAt(0);
             _segments.Add(segment);
-
-            Debug.Log("Tick");
+            
+            _grid.MoveOnCell(segment, this);
         }
     }
 }

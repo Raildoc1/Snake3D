@@ -22,12 +22,10 @@ namespace SnakeGame.Player
             _snake = snake;
             _snake.Segments.ObserveAdd().Subscribe(position => { AddSegmentAt(position.Value); }).AddTo(_disposables);
             _snake.Segments.ObserveRemove().Subscribe(_ => { RemoveSegment(); }).AddTo(_disposables);
-            Debug.Log("SnakeView.Init(snake)");
         }
 
         private void AddSegmentAt(Vector2Int position)
         {
-            Debug.Log($"AddSegmentAt({position})");
             _segments.Add(Instantiate(_segmentPrefab, new Vector3(position.x + 0.5f, 0f, position.y + 0.5f), Quaternion.identity, transform));
         }
 

@@ -11,32 +11,36 @@ namespace SnakeGame.GameCore
     public class GameManager : MonoBehaviour
     {
         [SerializeField] private SnakeController _snakeController;
-        [SerializeField] private Grid.Grid _grid;
+        [SerializeField] private GridSystem.Grid _grid;
         [SerializeField] private ViewManager _viewManager;
+        [SerializeField] private float _tickDeltaTime = 300f;
         
         private Snake _snake;
 
         private void Awake()
         {
             _snake = new Snake(_grid);
+            
             if (_snakeController)
             {
                 _snakeController.SetSnake(_snake);
             }
-
-            _snake.Init(Vector2Int.up);
-
+            
             if (_viewManager)
             {
                 _viewManager.Init(_grid, _snake);
             }
+
+            _snake.Init(Vector2Int.up);
+
+            _grid.SpawnFood(_snake);
             
             PlanTick();
         }
 
         private void PlanTick()
         {
-            Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(700f), () =>
+            Scheduler.MainThread.Schedule(TimeSpan.FromMilliseconds(_tickDeltaTime), () =>
             {
                 _snake.Tick();
                 PlanTick();

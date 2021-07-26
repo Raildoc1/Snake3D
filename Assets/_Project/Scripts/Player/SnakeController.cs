@@ -41,7 +41,7 @@ namespace SnakeGame.Player
 
         private void OnDirectionInputChanged(InputDirection direction)
         {
-            _snake?.ChangeDirection(direction);
+            _snake?.TryChangeDirection(direction);
         }
     }
 }

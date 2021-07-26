@@ -1,18 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Net.Configuration;
+using SnakeGame.Interaction;
+using SnakeGame.Player;
+using SnakeGame.View;
 using UnityEngine;
 
-namespace SnakeGame.Grid
+namespace SnakeGame.GridSystem
 {
-    public class GridObject
+    public class GridObject : IInteractable
     {
-        private readonly Vector2Int _position;
-
-        public Vector2Int Position => _position;
+        public bool DestroyOnInteract { get; private set; }
+        public Vector2Int Position { get; set; }
         
-        public GridObject(Vector2Int position)
+        public GridObject(Vector2Int position, bool destroyOnInteract = true)
         {
-            _position = position;
+            Position = position;
+            DestroyOnInteract = destroyOnInteract;
         }
+
+        public virtual InteractableType GetType()
+        {
+            return InteractableType.None;
+        }
+
+        public virtual void Interact(Grid grid, Snake snake)
+        {
+        }
+        
     }
 }

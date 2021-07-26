@@ -1,9 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Net.Configuration;
-using SnakeGame.Interaction;
+﻿using SnakeGame.Interaction;
 using SnakeGame.Player;
-using SnakeGame.View;
 using UnityEngine;
 
 namespace SnakeGame.GridSystem

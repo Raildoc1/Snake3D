@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using _Project.Scripts.Interaction;
 using SnakeGame.Player;
-using TMPro.EditorUtilities;
 using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;

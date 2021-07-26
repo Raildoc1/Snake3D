@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using SnakeGame.Player;
 using SnakeGame.View;
 using UniRx;

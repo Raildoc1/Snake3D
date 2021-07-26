@@ -1,5 +1,4 @@
-﻿using SnakeGame.GridSystem;
-using SnakeGame.Player;
+﻿using SnakeGame.Player;
 
 namespace SnakeGame.Interaction
 {

@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using SnakeGame.InputSystem;
-using TMPro;
+using SnakeGame.Player;
 using UniRx;
 using UnityEngine;
 
-namespace SnakeGame.Player
+namespace SnakeGame.View
 {
-    public class SnakeView : MonoBehaviour, IDisposable
+    public class SnakeView : ViewBase
     {
-        private readonly List<IDisposable> _disposables = new List<IDisposable>();
         private readonly List<GameObject> _segments = new List<GameObject>();
         private Snake _snake;
 
@@ -20,8 +16,8 @@ namespace SnakeGame.Player
         public void Init(Snake snake)
         {
             _snake = snake;
-            _snake.Segments.ObserveAdd().Subscribe(position => { AddSegmentAt(position.Value); }).AddTo(_disposables);
-            _snake.Segments.ObserveRemove().Subscribe(_ => { RemoveSegment(); }).AddTo(_disposables);
+            _snake.Segments.ObserveAdd().Subscribe(position => { AddSegmentAt(position.Value); }).AddTo(Disposables);
+            _snake.Segments.ObserveRemove().Subscribe(_ => { RemoveSegment(); }).AddTo(Disposables);
         }
 
         private void AddSegmentAt(Vector2Int position)
@@ -38,14 +34,6 @@ namespace SnakeGame.Player
             
             Destroy(_segments.First());
             _segments.RemoveAt(0);
-        }
-
-        public void Dispose()
-        {
-            foreach (var disposable in _disposables)
-            {
-                disposable.Dispose();
-            }
         }
     }
 }
